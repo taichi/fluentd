@@ -201,6 +201,7 @@ class ForwardInputTest < Test::Unit::TestCase
   def send_data(data)
     io = connect
     begin
+      sleep 0.5
       io.write data
     ensure
       io.close
