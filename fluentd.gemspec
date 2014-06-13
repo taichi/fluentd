@@ -1,4 +1,5 @@
 require File.expand_path('../lib/fluent/version', __FILE__)
+require File.expand_path('../lib/fluent/detect', __FILE__)
 
 Gem::Specification.new do |gem|
   gem.name          = "fluentd"
@@ -18,10 +19,18 @@ Gem::Specification.new do |gem|
 
   gem.required_ruby_version = '>= 1.9.2'
 
-  gem.add_runtime_dependency("msgpack", [">= 0.4.4", "!= 0.5.0", "!= 0.5.1", "!= 0.5.2", "!= 0.5.3", "< 0.6.0"])
+  if jruby?
+    gem.add_runtime_dependency("msgpack-jruby", ["~> 1.4.0"])
+  else
+    gem.add_runtime_dependency("msgpack", [">= 0.4.4", "!= 0.5.0", "!= 0.5.1", "!= 0.5.2", "!= 0.5.3", "< 0.6.0"])
+  end
   gem.add_runtime_dependency("json", [">= 1.4.3"])
-  gem.add_runtime_dependency("yajl-ruby", ["~> 1.0"])
-  gem.add_runtime_dependency("cool.io", [">= 1.1.1", "!= 1.2.0", "< 2.0.0"])
+  if jruby?
+    gem.add_runtime_dependency("gson",[">= 0.7"])
+  else
+    gem.add_runtime_dependency("yajl-ruby", ["~> 1.0"])
+  end
+  # gem.add_runtime_dependency("cool.io", [">= 1.1.1", "!= 1.2.0", "< 2.0.0"])
   gem.add_runtime_dependency("http_parser.rb", [">= 0.5.1", "< 0.7.0"])
   gem.add_runtime_dependency("sigdump", ["~> 0.2.2"])
   gem.add_runtime_dependency("tzinfo", [">= 1.0.0"])
