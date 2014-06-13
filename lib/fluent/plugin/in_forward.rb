@@ -49,7 +49,7 @@ module Fluent
 
       @usock = SocketUtil.create_udp_socket(@bind)
       @usock.bind(@bind, @port)
-      @usock.fcntl(Fcntl::F_SETFL, Fcntl::O_NONBLOCK)
+      @usock.fcntl(Fcntl::F_SETFL, Fcntl::O_NONBLOCK) unless jruby?
       @hbr = HeartbeatRequestHandler.new(@usock, method(:on_heartbeat_request))
       @loop.attach(@hbr)
 
