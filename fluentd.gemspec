@@ -19,6 +19,7 @@ Gem::Specification.new do |gem|
 
   gem.required_ruby_version = '>= 1.9.2'
 
+  gem.add_runtime_dependency('ffi')
   if jruby?
     gem.add_runtime_dependency("msgpack-jruby", ["~> 1.4.0"])
   else

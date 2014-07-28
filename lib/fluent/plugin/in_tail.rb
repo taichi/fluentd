@@ -20,6 +20,7 @@ module Fluent
     Plugin.register_input('tail', self)
 
     def initialize
+      require 'fluent/win32'
       super
       @paths = []
       @tails = {}
@@ -141,7 +142,12 @@ module Fluent
           pe = @pf[path]
           if @read_from_head && pe.read_inode.zero?
             begin
-              pe.update(File::Stat.new(path).ino, 0)
+              if windows?
+                stat = Win32::File::stat(path)
+              else
+                stat = File::Stat.new(path)
+              end
+              pe.update(stat.ino, 0)
             rescue Errno::ENOENT
               $log.warn "#{path} not found. Continuing without tailing it."
             end
@@ -347,7 +353,11 @@ module Fluent
         if @io_handler == nil
           if io
             # first time
-            stat = io.stat
+            if windows?
+              stat = Win32::File::stat(@path)
+            else
+              stat = io.stat
+            end
             fsize = stat.size
             inode = stat.ino
 
@@ -385,7 +395,11 @@ module Fluent
           @log.info log_msg
 
           if io
-            stat = io.stat
+            if windows?
+              stat = Win32::File::stat(@path)
+            else
+              stat = io.stat
+            end
             inode = stat.ino
             if inode == @pe.read_inode # truncated
               @pe.update_pos(stat.size)
@@ -549,8 +563,16 @@ module Fluent
 
         def on_notify
           begin
-            io = File.open(@path)
-            stat = io.stat
+            if windows? && jruby?
+              io = Coolio::File.open(@path)
+            else
+              io = File.open(@path)
+            end
+            if windows?
+              stat = Win32::File::stat(@path)
+            else
+              stat = io.stat
+            end
             inode = stat.ino
             fsize = stat.size
           rescue Errno::ENOENT
