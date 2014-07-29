@@ -186,7 +186,7 @@ class TailInputTest < Test::Unit::TestCase
 
     d.emits
   ensure
-    file.close
+    file.close unless file.nil?
   end
 
   def test_lf
