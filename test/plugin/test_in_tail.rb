@@ -317,7 +317,7 @@ class TailInputTest < Test::Unit::TestCase
     ], false)
     d.run do
       files.each do |file|
-        File.open(file, 'a') { |f|
+        File.open(file, 'ab') { |f|
           f.puts "f #{file} line should be ignored"
           f.puts "s test1"
           f.puts "f test2"
