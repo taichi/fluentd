@@ -251,7 +251,7 @@ class TailInputTest < Test::Unit::TestCase
       format_firstline /^[s]/
     ]
     d.run do
-      File.open("#{TMP_DIR}/tail.txt", "a") { |f|
+      File.open("#{TMP_DIR}/tail.txt", "ab") { |f|
         f.puts "f test1"
         f.puts "s test2"
         f.puts "f test3"
@@ -283,7 +283,7 @@ class TailInputTest < Test::Unit::TestCase
       format_firstline /^[s]/
     ]
     d.run do
-      File.open("#{TMP_DIR}/tail.txt", "a") { |f|
+      File.open("#{TMP_DIR}/tail.txt", "ab") { |f|
         f.puts "f test1"
         f.puts "s test2"
         f.puts "f test3"
@@ -346,7 +346,7 @@ class TailInputTest < Test::Unit::TestCase
       format3 /(?<var3>baz \\d)/
     ]
     d.run do
-      File.open("#{TMP_DIR}/tail.txt", "a") { |f|
+      File.open("#{TMP_DIR}/tail.txt", "ab") { |f|
         f.puts "foo 1"
         f.puts "bar 1"
         f.puts "baz 1"
