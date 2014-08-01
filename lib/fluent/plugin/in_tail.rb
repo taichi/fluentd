@@ -20,7 +20,7 @@ module Fluent
     Plugin.register_input('tail', self)
 
     def initialize
-      require 'fluent/win32'
+      require 'fluent/win32' if windows?
       super
       @paths = []
       @tails = {}
