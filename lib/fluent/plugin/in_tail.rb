@@ -664,9 +664,9 @@ module Fluent
     class FilePositionEntry
       POS_SIZE = 16
       INO_OFFSET = 17
-      INO_SIZE = 8
-      LN_OFFSET = 25
-      SIZE = 26
+      INO_SIZE = windows? ? 24 : 8
+      LN_OFFSET = INO_OFFSET + INO_SIZE
+      SIZE = POS_SIZE + 1 + INO_SIZE + 1
 
       def initialize(file, seek)
         @file = file
@@ -675,7 +675,7 @@ module Fluent
 
       def update(ino, pos)
         @file.pos = @seek
-        @file.write "%016x\t%08x" % [pos, ino]
+        @file.write sprintf("%016x\t%0*x", pos, INO_SIZE, ino)
       end
 
       def update_pos(pos)
@@ -685,13 +685,13 @@ module Fluent
 
       def read_inode
         @file.pos = @seek + INO_OFFSET
-        raw = @file.read(8)
+        raw = @file.read(INO_SIZE)
         raw ? raw.to_i(16) : 0
       end
 
       def read_pos
         @file.pos = @seek
-        raw = @file.read(16)
+        raw = @file.read(POS_SIZE)
         raw ? raw.to_i(16) : 0
       end
     end

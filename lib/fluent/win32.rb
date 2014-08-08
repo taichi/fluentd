@@ -123,7 +123,8 @@ module Win32
       
       def initialize(fi)
         @rdev = fi[:dwVolumeSerialNumber]
-        @ino  = Win32.to_large_integer fi[:nFileIndexHigh], fi[:nFileIndexLow]
+        fileIndex  = Win32.to_large_integer fi[:nFileIndexHigh], fi[:nFileIndexLow]
+        @ino = (@rdev << 64) | fileIndex
         @size = Win32.to_large_integer fi[:nFileSizeHigh] , fi[:nFileSizeLow]
         @atime = Win32.to_time fi[:ftLastAccessTime]
         @mtime = Win32.to_time fi[:ftLastWriteTime]
