@@ -503,7 +503,7 @@ module Fluent
             read_more = false
 
             begin
-              while true
+              while @io.closed? == false
                 if @buffer.empty?
                   @io.read_nonblock(2048, @buffer)
                 else
