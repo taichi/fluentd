@@ -173,8 +173,10 @@ class TailInputTest < Test::Unit::TestCase
       file.flush
       sleep 1
 
+      file.close if windows?
       FileUtils.mv("#{tmp_dir}/tail.txt", "#{tmp_dir}/tail2.txt")
       if block_given?
+        file = File.open("#{tmp_dir}/tail.txt", "w") if windows?
         yield file
         sleep 1
       else
@@ -196,7 +198,7 @@ class TailInputTest < Test::Unit::TestCase
 
     d.emits
   ensure
-    file.close unless file.nil?
+    file.close unless file.nil? || file.closed?
   end
 
   def test_lf
